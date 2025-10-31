@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="so">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>C.S Company – Dalabka System</title>
+  <style>
+    body {font-family: Arial, sans-serif; background:#f9fbfe; color:#222; margin:0; padding:0;}
+    header {background:#0b6fb5; color:white; padding:12px 20px; font-size:20px; font-weight:bold;}
+    main {padding:20px; max-width:600px; margin:auto; background:white; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.05);}
+    label {display:block; margin-top:10px; font-weight:bold;}
+    input, select, textarea {width:100%; padding:10px; margin-top:4px; border:1px solid #cdd9ed; border-radius:6px;}
+    button {background:#0b6fb5; color:white; border:none; padding:10px 16px; border-radius:6px; cursor:pointer; margin-top:12px;}
+    .price-box {background:#eef6ff; padding:10px; border-radius:6px; margin-top:10px;}
+    footer {text-align:center; padding:12px; color:#666;}
+  </style>
+</head>
+<body>
+  <header>C.S Company – System Order</header>
+  <main>
+    <h3>Dalbo System</h3>
+    <label>Magaca</label>
+    <input id="name" placeholder="Magacaaga">
+
+    <label>Telefoon</label>
+    <input id="phone" placeholder="610XXXXXXX">
+
+    <label>System</label>
+    <select id="product">
+      <option value="">-- Dooro --</option>
+      <option value="Hospital">Hospital System</option>
+      <option value="Pharmacy">Pharmacy System</option>
+    </select>
+
+    <label>Lacagta (USD)</label>
+    <input id="amount" placeholder="Tusaale: 250">
+
+    <label>Faahfaahin (optional)</label>
+    <textarea id="note"></textarea>
+
+    <button onclick="submitOrder()">Dalbo</button>
+
+    <div id="profile" class="price-box" style="display:none;">
+      <h4>Dalabkaaga waa la diiwaangeliyey ✅</h4>
+      <p><b>Magac:</b> <span id="pname"></span></p>
+      <p><b>System:</b> <span id="pproduct"></span></p>
+      <p><b>Qiime:</b> $<span id="pamount"></span></p>
+      <p><b>PIN:</b> <span id="ppin"></span></p>
+      <p><b>USSD:</b> <code id="pussd"></code></p>
+      <button onclick="notifyAdmin()">Dir WhatsApp</button>
+    </div>
+  </main>
+  <footer>© C.S Company • WhatsApp: +252 610 848 799</footer>
+
+  <script>
+    function uid(len=4){const s='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let r='';for(let i=0;i<len;i++)r+=s[Math.floor(Math.random()*s.length)];return r;}
+    function submitOrder(){
+      const n=document.getElementById('name').value.trim();
+      const ph=document.getElementById('phone').value.trim();
+      const pr=document.getElementById('product').value;
+      const a=document.getElementById('amount').value.trim();
+      const note=document.getElementById('note').value.trim();
+      if(!n||!ph||!pr||!a){alert('Fadlan buuxi dhammaan meelaha muhiimka ah');return;}
+      const pin=uid(4);
+      const ussd=`*712*610848799*${a}*${pin}#`;
+      const order={id:Date.now(),name:n,phone:ph,product:pr,amount:a,note:note,pin:pin,status:'Pending'};
+      const orders=JSON.parse(localStorage.getItem('cs_orders')||'[]');orders.push(order);
+      localStorage.setItem('cs_orders',JSON.stringify(orders));
+      document.getElementById('profile').style.display='block';
+      document.getElementById('pname').innerText=n;
+      document.getElementById('pproduct').innerText=pr;
+      document.getElementById('pamount').innerText=a;
+      document.getElementById('ppin').innerText=pin;
+      document.getElementById('pussd').innerText=ussd;
+      const msg=encodeURIComponent(`Dalab Cusub\nMagac: ${n}\nPhone: ${ph}\nSystem: ${pr}\nAmount: $${a}\nPIN: ${pin}\nUSSD: ${ussd}`);
+      window.open('https://wa.me/252610848799?text='+msg,'_blank');
+    }
+    function notifyAdmin(){
+      const msg=encodeURIComponent('Waxaan bixiyay lacagta, fadlan xaqiiji dalabkayga.');
+      window.open('https://wa.me/252610848799?text='+msg,'_blank');
+    }
+  </script>
+</body>
+</html>
